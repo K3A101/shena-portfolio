@@ -8,6 +8,21 @@ from html import escape
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# General site text, hero photo and contact details.
+# In hero_title, the word between *asterisks* is shown in the accent colour.
+# Leave a contact field empty ("") to hide it.
+SITE = {
+    "hero_greeting": "Hoi, ik ben Shena",
+    "hero_title": "Bouwkundige die ontwerp, data en *techniek* verbindt.",
+    "hero_text": "Ik studeer bouwkunde en werk op het snijvlak van architectuur en techniek: van parametrisch ontwerpen en ruimtelijke analyses tot digitale fabricage en programmeren.",
+    "hero_image": None,  # e.g. "shena.jpg" in images/; None shows a stand-in photo
+    "hero_image_alt": "Voorbeeldfoto (placeholder)",
+    "email": "hello@example.com",
+    "phone": "+31 6 00 00 00 00",
+    "linkedin": "https://www.linkedin.com/in/shena",
+    "github": "https://github.com/shena",
+}
+
 # Each competentie has numbered leerdoelen. Their codes ("1.1", "1.2", ...) are what projects refer to.
 # Optional: "diagram" (image in images/ with alt and caption) shown below the leerdoelen.
 COMPETENTIES = [
@@ -259,6 +274,13 @@ def page(*, title, description, prefix, body, current=None):
   <link rel="stylesheet" href="{prefix}css/base.css">
   <link rel="stylesheet" href="{prefix}css/style.css">
   <script src="{prefix}js/main.js" defer></script>
+  <script>
+    /* Apply a saved light/dark choice before the page is drawn, to avoid a flash */
+    try {{
+      var savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
+    }} catch (e) {{}}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Direct naar de inhoud</a>
@@ -279,6 +301,17 @@ def page(*, title, description, prefix, body, current=None):
           {link("index.html#contact", "Contact", "contact")}
         </ul>
       </nav>
+
+      <button class="theme-toggle" type="button" aria-pressed="false" data-theme-toggle hidden>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.5"/>
+          <path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/>
+        </svg>
+        <span class="visually-hidden">Lichte modus</span>
+      </button>
     </div>
   </header>
 
@@ -375,19 +408,62 @@ def write(rel, content):
 # Pages
 
 
+def hero_title():
+    """Escapes the title and turns *word* into the accent-coloured span."""
+    parts = escape(SITE["hero_title"]).split("*")
+    return "".join(
+        f'<span class="hero__title-accent">{part}</span>' if i % 2 else part
+        for i, part in enumerate(parts)
+    )
+
+
+def hero_image_src():
+    image = SITE.get("hero_image")
+    if not image:
+        return picsum("shena-hero", 800, 1000)
+    if image.startswith(("http://", "https://")):
+        return image
+    return f"images/{image}"
+
+
+def contact_items():
+    def item(label, href, text, external=False):
+        new_tab = ' rel="noopener noreferrer" target="_blank"' if external else ""
+        hint = '<span class="visually-hidden"> (opent in een nieuw tabblad)</span>' if external else ""
+        return f"""            <li class="contact__item reveal">
+              <span class="contact__label">{label}</span>
+              <a class="contact__value" href="{escape(href)}"{new_tab}>{escape(text)}{hint}</a>
+            </li>"""
+
+    def short(url):
+        for prefix in ("https://", "http://", "www."):
+            url = url.removeprefix(prefix) if url.startswith(prefix) else url
+        return url.rstrip("/")
+
+    items = []
+    if SITE.get("email"):
+        items.append(item("E-mail", f"mailto:{SITE['email']}", SITE["email"]))
+    if SITE.get("phone"):
+        items.append(item("Telefoon", "tel:" + SITE["phone"].replace(" ", ""), SITE["phone"]))
+    if SITE.get("linkedin"):
+        items.append(item("LinkedIn", SITE["linkedin"], short(SITE["linkedin"]), external=True))
+    if SITE.get("github"):
+        items.append(item("GitHub", SITE["github"], short(SITE["github"]), external=True))
+    return "\n".join(items)
+
+
 def build_index():
     cards = "\n\n".join(competentie_card(c) for c in COMPETENTIES)
     body = f"""    <!-- Hero -->
     <section class="hero" id="home" aria-labelledby="hero-title">
       <div class="container hero__inner">
         <div class="hero__content">
-          <p class="hero__greeting">Hoi, ik ben Shena</p>
+          <p class="hero__greeting">{escape(SITE['hero_greeting'])}</p>
           <h1 class="hero__title" id="hero-title">
-            Bouwkundige die ontwerp, data en <span class="hero__title-accent">techniek</span> verbindt.
+            {hero_title()}
           </h1>
           <p class="hero__text">
-            Ik studeer bouwkunde en werk op het snijvlak van architectuur en techniek: van parametrisch
-            ontwerpen en ruimtelijke analyses tot digitale fabricage en programmeren.
+            {escape(SITE['hero_text'])}
           </p>
           <div class="hero__actions">
             <a class="button button--primary" href="#competenties">Bekijk mijn werk</a>
@@ -395,7 +471,7 @@ def build_index():
           </div>
         </div>
         <figure class="hero__image">
-          <img src="{picsum('shena-hero', 800, 1000)}" alt="Voorbeeldfoto (placeholder)" width="800" height="1000">
+          <img src="{escape(hero_image_src())}" alt="{escape(SITE['hero_image_alt'])}" width="800" height="1000">
         </figure>
       </div>
     </section>
@@ -424,26 +500,7 @@ def build_index():
 
         <address>
           <ul class="contact__list">
-            <li class="contact__item reveal">
-              <span class="contact__label">E-mail</span>
-              <a class="contact__value" href="mailto:hello@example.com">hello@example.com</a>
-            </li>
-            <li class="contact__item reveal">
-              <span class="contact__label">Telefoon</span>
-              <a class="contact__value" href="tel:+31600000000">+31 6 00 00 00 00</a>
-            </li>
-            <li class="contact__item reveal">
-              <span class="contact__label">LinkedIn</span>
-              <a class="contact__value" href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank">
-                linkedin.com/in/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span>
-              </a>
-            </li>
-            <li class="contact__item reveal">
-              <span class="contact__label">GitHub</span>
-              <a class="contact__value" href="https://github.com/" rel="noopener noreferrer" target="_blank">
-                github.com/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span>
-              </a>
-            </li>
+{contact_items()}
           </ul>
         </address>
       </div>

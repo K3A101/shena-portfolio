@@ -35,6 +35,39 @@ if (navToggle && navList) {
   });
 }
 
+/* ---- Light/dark theme toggle ----
+   The choice is stored in localStorage; without a choice the site follows the system
+   setting. The inline script in <head> applies a saved choice before the page is drawn. */
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const systemLight = window.matchMedia("(prefers-color-scheme: light)");
+
+function currentTheme() {
+  return document.documentElement.dataset.theme || (systemLight.matches ? "light" : "dark");
+}
+
+function showTheme() {
+  themeToggle.setAttribute("aria-pressed", String(currentTheme() === "light"));
+}
+
+if (themeToggle) {
+  themeToggle.hidden = false;
+  showTheme();
+
+  themeToggle.addEventListener("click", () => {
+    const next = currentTheme() === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {
+      // Storage blocked (e.g. private mode): the choice lasts until the page is left
+    }
+    showTheme();
+  });
+
+  // Follow system changes while the visitor hasn't made a choice
+  systemLight.addEventListener("change", showTheme);
+}
+
 /* ---- Footer year ---- */
 document.querySelectorAll("[data-year]").forEach((el) => {
   el.textContent = new Date().getFullYear();

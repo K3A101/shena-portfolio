@@ -10,6 +10,13 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/main.js" defer></script>
+  <script>
+    /* Apply a saved light/dark choice before the page is drawn, to avoid a flash */
+    try {
+      var savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Direct naar de inhoud</a>
@@ -30,6 +37,17 @@
           <li><a class="nav__link" href="#contact">Contact</a></li>
         </ul>
       </nav>
+
+      <button class="theme-toggle" type="button" aria-pressed="false" data-theme-toggle hidden>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.5"/>
+          <path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/>
+        </svg>
+        <span class="visually-hidden">Lichte modus</span>
+      </button>
     </div>
   </header>
 
@@ -43,8 +61,7 @@
             Bouwkundige die ontwerp, data en <span class="hero__title-accent">techniek</span> verbindt.
           </h1>
           <p class="hero__text">
-            Ik studeer bouwkunde en werk op het snijvlak van architectuur en techniek: van parametrisch
-            ontwerpen en ruimtelijke analyses tot digitale fabricage en programmeren.
+            Ik studeer bouwkunde en werk op het snijvlak van architectuur en techniek: van parametrisch ontwerpen en ruimtelijke analyses tot digitale fabricage en programmeren.
           </p>
           <div class="hero__actions">
             <a class="button button--primary" href="#competenties">Bekijk mijn werk</a>
@@ -295,15 +312,11 @@
             </li>
             <li class="contact__item reveal">
               <span class="contact__label">LinkedIn</span>
-              <a class="contact__value" href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank">
-                linkedin.com/in/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span>
-              </a>
+              <a class="contact__value" href="https://www.linkedin.com/in/shena" rel="noopener noreferrer" target="_blank">linkedin.com/in/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span></a>
             </li>
             <li class="contact__item reveal">
               <span class="contact__label">GitHub</span>
-              <a class="contact__value" href="https://github.com/" rel="noopener noreferrer" target="_blank">
-                github.com/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span>
-              </a>
+              <a class="contact__value" href="https://github.com/shena" rel="noopener noreferrer" target="_blank">github.com/shena<span class="visually-hidden"> (opent in een nieuw tabblad)</span></a>
             </li>
           </ul>
         </address>

@@ -5,18 +5,22 @@
    ========================================================================== */
 
 :root {
-  /* ---- Colors ---- */
+  /* ---- Colors (dark theme, the default) ----
+     The light theme overrides these at the bottom of this file. */
+  color-scheme: dark;
   --color-bg: #132429;
   --color-bg-elevated: #1a3138;      /* cards, header */
   --color-bg-subtle: #20393f;        /* hover states, tags */
-  --color-text: #f4f1f3;             /* main light text */
+  --color-header-bg: rgba(19, 36, 41, 0.92);
+  --color-text: #f4f1f3;             /* main text */
   --color-text-muted: #b9c4c7;       /* secondary text */
-  --color-white: #ffffff;
+  --color-heading: #ffffff;          /* headings, logo, card titles */
   --color-accent: #e0c5d3;
   --color-accent-strong: #f0dce6;    /* accent hover */
   --color-on-accent: #132429;        /* text on accent backgrounds */
   --color-border: rgba(224, 197, 211, 0.2);
   --color-focus: #e0c5d3;
+  --shadow-card: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.25);
 
   /* ---- Typography ---- */
   --font-family-base: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -65,7 +69,6 @@
   --radius-pill: 99.9rem;
 
   /* ---- Effects ---- */
-  --shadow-card: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.25);
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
 }
@@ -74,4 +77,45 @@
   :root {
     --container-padding: var(--space-xl);
   }
+}
+
+/* ---- Light theme ----
+   Used when the visitor's system is set to light (unless they chose dark with the
+   theme button), or when they chose light with the button. js/main.js sets
+   data-theme on <html>. Both blocks below must stay identical. */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --color-bg: #f7f3f5;
+    --color-bg-elevated: #ffffff;
+    --color-bg-subtle: #efe4ea;
+    --color-header-bg: rgba(247, 243, 245, 0.92);
+    --color-text: #1d2e33;
+    --color-text-muted: #4f5f64;
+    --color-heading: #132429;
+    --color-accent: #8a4a6b;
+    --color-accent-strong: #6e3754;
+    --color-on-accent: #ffffff;
+    --color-border: rgba(138, 74, 107, 0.2);
+    --color-focus: #8a4a6b;
+    --shadow-card: 0 0.8rem 2.4rem rgba(19, 36, 41, 0.12);
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #f7f3f5;
+  --color-bg-elevated: #ffffff;
+  --color-bg-subtle: #efe4ea;
+  --color-header-bg: rgba(247, 243, 245, 0.92);
+  --color-text: #1d2e33;
+  --color-text-muted: #4f5f64;
+  --color-heading: #132429;
+  --color-accent: #8a4a6b;
+  --color-accent-strong: #6e3754;
+  --color-on-accent: #ffffff;
+  --color-border: rgba(138, 74, 107, 0.2);
+  --color-focus: #8a4a6b;
+  --shadow-card: 0 0.8rem 2.4rem rgba(19, 36, 41, 0.12);
 }

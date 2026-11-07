@@ -52,7 +52,7 @@ h4 {
   font-family: var(--font-family-heading);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-tight);
-  color: var(--color-white);
+  color: var(--color-heading);
 }
 
 h1 { font-size: var(--font-size-2xl); }

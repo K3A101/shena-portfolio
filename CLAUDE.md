@@ -12,6 +12,8 @@ python3 build.py
 
 **All HTML pages are generated:** `index.html`, `reflectie.html`, `competenties/*.html` and `projects/*.html`. Never edit them directly, because the next build overwrites them. To change content or markup, edit `build.py` and run it again, then commit the script and the regenerated pages together.
 
+`EDITING-HTML.md` lets the content editor change the HTML pages by hand. **Before running `build.py`, check `git status` and `git diff` for hand edits in the HTML pages.** If there are any, copy them into `build.py` first, or ask the user, because the build would overwrite them.
+
 ## Language
 
 The whole site is in **Dutch** (`<html lang="nl">`). This covers all visible text, `aria-label`s, `alt` text, meta descriptions and HTML comments meant for the content editor. Use correct Dutch spelling, e.g. "Digitale fabricage" (not "fabrikage").
@@ -40,7 +42,9 @@ projects/<project-slug>.html       Project page: case study + the leerdoelen it 
 
 ## Editing content in `build.py`
 
-All content lives in data structures at the top of `build.py`. The order in each one is the order shown on the site.
+All content lives in data structures at the top of `build.py`. The order in each one is the order shown on the site. `README.md` is a step-by-step guide to editing this content, written for a non-coder. Keep it in sync when labels, fields or error messages change.
+
+**`SITE`:** hero greeting, title and text, plus the hero photo and its alt text, and the contact details. In `hero_title`, the word between `*asterisks*` gets the accent colour. An empty contact field hides that contact item.
 
 **`REFLECTIE`:** the reflectie page is a **STAR-reflectie**: Situatie, Taak, Actie, Resultaat. Its fields are `title`, `lead` and `sections`. Each section has a `letter` (shown as a badge before the heading), a `heading` and `paragraphs`, a list of plain-text strings with one string per paragraph. Keep the STAR order.
 
@@ -59,7 +63,7 @@ The nav menu, in the `page()` function, has these items: Home, Competenties, Ref
 **`PROJECTS`:**
 - Required: `slug`, `title`, `leerdoelen` (a list of codes, primary first), `tags` (keys from `TAGS`), `lead`, `role`, `date` (`"YYYY-MM"`, shown as e.g. "oktober 2026" under "Periode"), `tools`.
 - Optional: `challenge`, `process`, `steps` (a list; `[]` hides the list), `result`, `image` (a file name in `images/` or a full `https://` URL), `image_alt` (Dutch alt text, required when there is an image), `caption`.
-- Without `image`, a project shows a stand-in photo from picsum.photos, seeded with the project slug so the photo stays the same between loads. The hero also uses a Picsum photo (the `picsum()` helper). Replace these with real images before publishing. All images have rounded corners (`--radius-lg`).
+- Without `image`, a project shows a stand-in photo from picsum.photos, seeded with the project slug so the photo stays the same between loads. The hero does the same until `SITE["hero_image"]` is set (the `picsum()` helper). Replace these with real images before publishing. All images have rounded corners (`--radius-lg`).
 - Any optional text left out falls back to placeholder text from `CONTENT_DEFAULTS`.
 - All text is HTML-escaped, so write plain text, not HTML.
 - An unknown leerdoel code or tag key, or a badly formatted `date`, stops the build with an `error:`.
@@ -78,6 +82,10 @@ If a competentie has no projects, its page says so. The shared page shell (heade
 ## CSS
 
 - `css/variables.css` holds the design tokens: colors, type scale, spacing, radius and transitions. Always use these tokens instead of hard-coded values. `1rem = 10px`, because `base.css` sets `html { font-size: 62.5% }`.
+- **Light and dark theme:** dark is the default `:root` palette. The light palette appears twice at the bottom of `variables.css`, and both copies must stay identical:
+  - under `@media (prefers-color-scheme: light)` for `:root:not([data-theme="dark"])`, which follows the system setting
+  - under `:root[data-theme="light"]`, which is the visitor's choice made with the header button
+  - Components must only use color tokens. Never hard-code a color, or it won't switch with the theme. For heading/logo/card-title text use `--color-heading`, and for the sticky header use `--color-header-bg`.
 - `css/base.css` holds the reset, typography and utilities like `.visually-hidden` and `.skip-link`.
 - `css/style.css` holds the layout and components, in BEM-style naming (`block__element--modifier`).
   - `.project-card` is used for both project cards and competentie cards (`.project-card.theme-card`). The `theme-*` class names are kept from the earlier theme-based layout. The whole card is clickable through `.project-card__link::after`, which keeps it to one link per card for accessibility.
@@ -90,6 +98,7 @@ If a competentie has no projects, its page says so. The shared page shell (heade
 `js/main.js` is loaded with `defer` on every page. It:
 - swaps the `no-js` class on `<html>` for `js`
 - runs the mobile nav toggle (with `aria-expanded` and closing on Escape)
+- runs the light/dark toggle (`[data-theme-toggle]`, `aria-pressed="true"` means light). It sets `data-theme` on `<html>` and stores the choice in `localStorage` under `theme`. A small inline script in `<head>` (in `page()`) applies a saved choice before first paint, to avoid a flash. Without JS the button stays hidden and the site follows the system setting.
 - fills the footer year (`[data-year]`)
 - adds prev/next buttons to sliders (`[data-slider]`)
 - fades in `.reveal` elements on scroll with an IntersectionObserver, skipped when the user prefers reduced motion
@@ -105,4 +114,4 @@ The site must keep working without JS.
 
 ## Content status
 
-The six projects in `PROJECTS` are placeholder examples, and so are their leerdoel links. They still need Shena's real work. The competentie 4 diagram is missing. The reflectie text is placeholder prompts. All photos are Picsum stand-ins. The contact details (email, phone, LinkedIn, GitHub) in `build_index()` are placeholders too.
+The six projects in `PROJECTS` are placeholder examples, and so are their leerdoel links. They still need Shena's real work. The competentie 4 diagram is missing. The reflectie text is placeholder prompts. All photos are Picsum stand-ins. The contact details in `SITE` are placeholders too.

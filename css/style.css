@@ -82,7 +82,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background-color: rgba(19, 36, 41, 0.92);
+  background-color: var(--color-header-bg);
   backdrop-filter: blur(0.8rem);
   border-bottom: var(--border-width) solid var(--color-border);
 }
@@ -97,7 +97,7 @@
 .site-header__logo {
   font-family: var(--font-family-heading);
   font-size: var(--font-size-lg);
-  color: var(--color-white);
+  color: var(--color-heading);
   text-decoration: none;
 }
 
@@ -218,6 +218,63 @@
   .nav__link {
     padding: var(--space-xs) 0;
     font-size: var(--font-size-base);
+  }
+}
+
+/* ---- Light/dark theme toggle ---- */
+
+.nav {
+  margin-left: auto;
+}
+
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  margin-left: var(--space-sm);
+  padding: 0;
+  background: none;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.theme-toggle[hidden] {
+  display: none;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.theme-toggle__icon {
+  width: 2rem;
+  height: 2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Dark theme shows the sun (switch to light); light theme shows the moon */
+.theme-toggle__icon--moon,
+.theme-toggle[aria-pressed="true"] .theme-toggle__icon--sun {
+  display: none;
+}
+
+.theme-toggle[aria-pressed="true"] .theme-toggle__icon--moon {
+  display: block;
+}
+
+@media (min-width: 48em) {
+  .theme-toggle {
+    margin-left: var(--space-xl);
   }
 }
 
@@ -349,7 +406,7 @@
 
 /* Makes the whole card clickable while keeping one accessible link */
 .project-card__link {
-  color: var(--color-white);
+  color: var(--color-heading);
   text-decoration: none;
 }
 
