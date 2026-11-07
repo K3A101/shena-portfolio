@@ -1,0 +1,77 @@
+/* ==========================================================================
+   Design tokens
+   Change values here to update the whole site.
+   1rem = 10px (see html { font-size: 62.5%; } in base.css)
+   ========================================================================== */
+
+:root {
+  /* ---- Colors ---- */
+  --color-bg: #132429;
+  --color-bg-elevated: #1a3138;      /* cards, header */
+  --color-bg-subtle: #20393f;        /* hover states, tags */
+  --color-text: #f4f1f3;             /* main light text */
+  --color-text-muted: #b9c4c7;       /* secondary text */
+  --color-white: #ffffff;
+  --color-accent: #e0c5d3;
+  --color-accent-strong: #f0dce6;    /* accent hover */
+  --color-on-accent: #132429;        /* text on accent backgrounds */
+  --color-border: rgba(224, 197, 211, 0.2);
+  --color-focus: #e0c5d3;
+
+  /* ---- Typography ---- */
+  --font-family-base: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-heading: Georgia, "Times New Roman", serif;
+
+  --font-size-xs: 1.2rem;    /* 12px */
+  --font-size-sm: 1.4rem;    /* 14px */
+  --font-size-base: 1.6rem;  /* 16px */
+  --font-size-md: 1.8rem;    /* 18px */
+  --font-size-lg: 2.4rem;    /* 24px */
+  --font-size-xl: 3.2rem;    /* 32px */
+  --font-size-2xl: 4.8rem;   /* 48px */
+  --font-size-3xl: 6.4rem;   /* 64px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.15;
+  --line-height-base: 1.6;
+
+  --letter-spacing-wide: 0.15em;
+
+  /* ---- Spacing ---- */
+  --space-2xs: 0.4rem;   /* 4px */
+  --space-xs: 0.8rem;    /* 8px */
+  --space-sm: 1.2rem;    /* 12px */
+  --space-md: 1.6rem;    /* 16px */
+  --space-lg: 2.4rem;    /* 24px */
+  --space-xl: 3.2rem;    /* 32px */
+  --space-2xl: 4.8rem;   /* 48px */
+  --space-3xl: 6.4rem;   /* 64px */
+  --space-4xl: 9.6rem;   /* 96px */
+
+  /* ---- Layout ---- */
+  --container-max-width: 120rem;  /* 1200px */
+  --container-narrow: 76rem;      /* 760px, for reading text */
+  --container-padding: var(--space-md);
+  --header-height: 7.2rem;
+
+  /* ---- Borders & radius ---- */
+  --border-width: 0.1rem;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.6rem;
+  --radius-pill: 99.9rem;
+
+  /* ---- Effects ---- */
+  --shadow-card: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.25);
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+@media (min-width: 48em) {
+  :root {
+    --container-padding: var(--space-xl);
+  }
+}
